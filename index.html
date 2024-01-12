@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>COCTELERIA</title>
+</head>
+<body> 
+        
+    <!-- NAVEGACION -->
+    <div class="contenedorNav">
+        <nav>
+            <ul>
+                <li>
+                    <a href="#"><img src="logo.jpg" alt=""></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- CABECERA -->
+    <header>
+       <div class="contenedorHeader">
+            <div class="headerTexto">
+                <h1>Coktail</h1>
+                <h3>Desde 2021 en Granada</h3>
+                <p>Le presentamos nuestra carta</p>
+            </div>
+            <div class="headerImg">
+                <img src="imgFondo.jpg" alt="">
+            </div>
+        </div>
+    </header>
+    
+    
+    <main>
+            <div class="buscador">
+                <input type="text" placeholder="Nombre coctel" >
+            </div>
+            <div class="contenedorFiltros">
+                <h2 class="titulos">BÚSQUEDA CON FILTROS</h2>
+
+                <div class="filtros">
+                    <div id="categorias" class="filtro">
+                        <h3>Categorias</h3>
+                        <select name="select__categorias" id="select__categorias">
+                                
+                        </select>
+                    </div>
+                    <div id="tipoVaso" class="filtro">
+                        <h3>Tipos de vasos</h3>
+                        <select name="select__tipoVaso" id="select__tipoVaso">
+                                
+                        </select>
+                    </div>
+                    <div id="ingredientes" class="filtro">
+                        <h3>Ingredientes</h3>
+                        <select name="select__ingredientes" id="select__ingredientes">
+
+                        </select>
+                    </div>
+                    <div id="alcohol" class="filtro">
+                        <h3>Alcohol</h3>
+                        <select name="select__alcohol" id="select__alcohol">
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="contenedorFiltros__botones">
+                    <!-- <input type="submit" value="Buscar" class="contenedorFiltros__boton"> -->
+                    <input type="submit" value="Mostrar todos" class="contenedorFiltros__boton" id="botonMostarTodos">
+                </div>
+            </div>
+            
+        <div id="contenedorCocteles">
+            <h2 class="titulos">CÓCTELES</h2>
+            <div id="respuestaApi">
+
+            </div>
+            <div class="containerLoader">
+                <svg id="loader" width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M350 200C350 117.157 282.843 50 200 50" stroke="#191919" stroke-width="12" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+        
+    </main>
+    
+</body>
+</html>
