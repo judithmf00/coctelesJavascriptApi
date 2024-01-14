@@ -54,6 +54,33 @@
             font-weight: 100;
         }
 
+/*ESTILOS CARRITO*/
+.divconCarrito{
+    color: #040404;
+    width: 100%;
+    font-size: 50px;
+    text-align: end;
+    padding: 20px 60px;
+    position: fixed;
+    top: 20px;
+    right: 0;
+}
+   .divconCarrito #carrito::after{
+        content: "2";
+        font-size: 16px;
+        text-align: center;
+        line-height: 26px;
+        color: white;
+        width: 30px;
+        height: 30px;
+        display: block;
+        background-color: #9a9f95;
+        position: absolute;
+        top: 15px;
+        right: 50px;
+        border-radius: 50%;
+    }
+
 /* ESTILOS MAIN */
 /* FILTROS */
 main{
@@ -122,6 +149,12 @@ main{
                     margin: 10px 0px;
                     padding: 5px 20px;
                 }
+        .respuestaApi__coctel .respuestaApi__infoCoctel .btnPedir{
+            background-color: #9a9f95;
+            width: 100px;
+            font-weight: bold;
+            color: white;
+        } 
         .contenedorFiltros__botones{
             margin: 30px 0px;
             display: flex;
@@ -138,17 +171,57 @@ main{
                 border-radius: 20px;
                 transition: 0.7s;
             }
-                .contenedorFiltros__boton:hover,.respuestaApi__coctel input:hover{
+                .contenedorFiltros__boton:hover,.respuestaApi__coctel input:hover , .respuestaApi__coctel .respuestaApi__infoCoctel .btnPedir:hover{
                     color: white;
                     background-color: #040404;
                     font-weight: 700;
                 }
 
+               
 
 /* ESTILOS COCTELES RESPUESTA API */
 #contenedorCocteles h2{
     margin-top: 100px;
 }
+#contenedorCocteles .contenedorOrdenar{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+    height: 100px;
+}
+    .contenedorOrdenar p{
+        font-size: 22px;
+        background-color: #9a9f95a3;
+        color: white;
+        font-weight: bold;
+        padding: 10px 20px;
+        width: 150px;
+        border-radius: 10px;
+    }
+    #contenedorCocteles .contenedorOrdenar  input[type=radio]{
+        -webkit-appearance: none; /* Elimina el estilo predeterminado de WebKit */
+        -moz-appearance: none; /* Elimina el estilo predeterminado de Firefox */
+        appearance: none; /* Elimina el estilo predeterminado */
+        outline: none; /* Elimina el contorno por defecto en algunos navegadores */
+
+        margin-right: 5px;
+        width: 20px;
+        height: 20px; 
+        border-radius: 50%; 
+        border: 2px solid #9a9f95; 
+        padding: 2px;
+       
+    }
+    #contenedorCocteles .contenedorOrdenar  input[type=radio]:checked{
+        background-color: #9a9f95;
+        font-size: 22px;
+    }
+    #contenedorCocteles .contenedorOrdenar  input[type=radio]:checked + label{
+        font-size: 18px;
+        font-weight: bold;
+        transition: 0.2s linear;
+    }
 .respuestaApi__coctel{
     height: 350px;
     margin-bottom: 30px;
