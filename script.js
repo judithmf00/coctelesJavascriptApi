@@ -7,7 +7,6 @@ window.onload=function () {
     //Contenedor en el que estaran las respuestas de la api
     contenedor=document.getElementById("respuestaApi");
     
-
     //CARGAR LOS SELECT DE BUSQUEDA
     loadCategories();
     loadGlass();
@@ -164,19 +163,15 @@ async function loadAlcoholic(){
  */
 let coctelesTotales;
 async function getCocktails(llamadaApi) {
-    contenedor.innerHTML=""
-
-    console.log(llamadaApi)
+    contenedor.innerHTML="";
     
     try {
         let response = await fetch(llamadaApi)
 
         if (response.ok) {
             coctelesTotales= await response.json();
-            
-           //ORDENAR ALFABÉTICAMENTE EL RESULTADO DE LA API
 
-
+            //VARIABLES PARA CALCULAR EL ULTIMO COCTELES Y QUITAR LA IMG DE LA CARGA
             let imgLoader = document.getElementById("loader");
             let lengthConsulta=coctelesTotales.drinks.length;
             let ultimoCoctelConsulta=coctelesTotales.drinks[lengthConsulta-1].strDrink;
@@ -186,6 +181,7 @@ async function getCocktails(llamadaApi) {
              * @description Estan funcion se escargara de ir cargando los cocteles de 8 en 8, 
              *              indicandole el primer y ultimo coctel, estos parametros se irán cambiando conforme vaya haciendo scroll el usuario
              */
+            contenedor.innerHTML="";
             addCocktails=(startIndex, endIndex) =>{
                 let coctelesDivididos = coctelesTotales.drinks.slice(startIndex, endIndex);
                 coctelesDivididos.forEach(coctel => {
@@ -290,7 +286,8 @@ function changeCallApi() {
             cambiarACualquiera(tipeStrings)
             let selectedIndex=tipe.selectedIndex;
             value = tipe.options[selectedIndex].value;
-            llamadaApi= `https://www.thecocktaildb.com/api/json/v1/1/filter.php?${filter}=${value}`.replaceAll(" ","_")
+            llamadaApi= `https://www.thecocktaildb.com/api/json/v1/1/filter.php?${filter}=${value}`.replaceAll(" ","_");
+
             getCocktails(llamadaApi);
             coctelesMostrados=8;
         })
@@ -321,6 +318,10 @@ function changeCallApi() {
    //(SI LE DA CLICK AL BOTON MOSTAR TODOS, CAMBIARA TODOS LOS FILTROS A CUALQUIERA)
    let botonMostrarTodos=document.getElementById("botonMostrarTodos");
    botonMostrarTodos.addEventListener('click',function(){
+        // VOLVER A PONER VISIBLE EL LOADER
+        let imgLoader = document.getElementById("loader");
+        imgLoader.style.opacity = 1;
+        
         cambiarACualquiera(" ");
         getCocktails("https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic");
    });
