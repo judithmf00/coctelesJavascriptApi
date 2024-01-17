@@ -2,6 +2,9 @@
 let contenedor;
 let coctelesMostrados = 8; // Muestra los primeros 8 cocteles nada mas iniciar la web
 let isFetch=false;
+let imgLoader;
+let ultimoCoctelConsulta;
+let llamadaApi="https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic";
 
 window.onload=function () {
     //Contenedor en el que estaran las respuestas de la api
@@ -14,7 +17,7 @@ window.onload=function () {
     loadAlcoholic();
     
     //Cargar primeros cocteles, será los que tienen alcohol
-    getCocktails('https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic');
+    getCocktails();
 
     //FUncion que cambia los filtros
     changeCallApi();
@@ -56,7 +59,6 @@ async function loadCategories(){
         
         if (response.ok) {
             let categories = await response.json();
-            console.log(categories.drinks[0].strCategory)
             createOption("cualquiera","Cualquier categoría",containerCategories)
 
             categories.drinks.forEach(categorie => {
@@ -155,75 +157,99 @@ async function loadAlcoholic(){
 //------------FIN DE FUNCIONES PARA RELLENAR LOS SELECT DE BUSQUEDA---------------------
 
 
+//-----------------FUNCION PARA CARGAR LOS COCTELES DE 8 EN 8---------------------------
+/**
+ * @name addCocktails
+ * @description Esta funcion se escargara de ir cargando los cocteles de 8 en 8, 
+ *              indicandole el primer y ultimo coctel, estos parametros se irán cambiando conforme vaya haciendo scroll el usuario
+ */
+
+addCocktails=(startIndex, endIndex) =>{
+    
+    // orderCOctail()
+    console.log("coctelesTotales")
+    console.log(coctelesTotales)
+    console.log("coctelesTotales de mayor a menor")
+    coctelesTotales.drinks.sort((a, b) => b.strDrink.localeCompare(a.strDrink))
+    console.log("coctelesTotales")
+    console.log(coctelesTotales)
+    //crear una variable global para que indique si esta checkeado el asc o desc, y segun eso ordene de una forma u otra
+
+    let coctelesDivididos = coctelesTotales.drinks.slice(startIndex, endIndex);
+    console.log(coctelesDivididos)
+    coctelesDivididos.forEach(coctel => {
+        let divCoctel = document.createElement('div');
+        let divInfo = document.createElement('div');
+
+        let imagen = document.createElement('img');
+        let nombre = document.createElement('h3');
+        let precio = document.createElement('p');
+        let boton = document.createElement('input');
+        let boton2 = document.createElement('input');
+
+        imagen.src = coctel.strDrinkThumb;
+        nombre.innerHTML = coctel.strDrink;
+        precio.innerHTML = (9 + Math.random() * (13 - 9)).toFixed(2) + "€";
+        divCoctel.className = "respuestaApi__coctel";
+        divInfo.className = "respuestaApi__infoCoctel";
+        boton.type = "button";
+        boton.value = "Ver detalles";
+        boton.addEventListener("click",function (ev) {
+            ev.preventDefault();
+            loadDetails(coctel.idDrink);
+        })
+
+        boton2.type = "button";
+        boton2.value = 'Pedir';
+        boton2.className="btnPedir";
+
+        divInfo.appendChild(nombre);
+        divInfo.appendChild(precio);
+        divInfo.appendChild(boton);
+        divInfo.appendChild(boton2);
+        divCoctel.appendChild(imagen);
+        divCoctel.appendChild(divInfo);
+        contenedor.appendChild(divCoctel);
+
+        //ELIMINAR LOGO DE CARGA CUANDO EL ULTIMO NOMBRE DEL COCTEL DEL ARRAY COINCIDA CON LOS QEU SE MUESTRA
+        //LO VOLVEREMOS A PONER VISIBLE CUANDO HAYA UN CAMBIO EN LOS SELECT, CUANDO LA CONSULTA A LA API CAMBIE, 
+        //EN EL METODO 'changeCallApi'
+        if (ultimoCoctelConsulta==coctel.strDrink) {
+            imgLoader.style.opacity="0";
+        }
+    });
+
+    coctelesMostrados += 8; // Incrementar la cantidad de cócteles mostrados
+};
+
+//--------------FIN FUNCION PARA CARGAR LOS COCTELES DE 8 EN 8--------------------
+
+
 //------------FUNCION PARA CARGAR LOS COCTELES------------------------------------
 /**
  * @name getCocktails
  * @description Función para obtener los cócteles según la llamda a la API. 
  * @param llamadaApi Url de la llamada a la api
  */
-let coctelesTotales;
-async function getCocktails(llamadaApi) {
+async function getCocktails() {
+   
     contenedor.innerHTML="";
     
     try {
         let response = await fetch(llamadaApi)
 
+        
         if (response.ok) {
             coctelesTotales= await response.json();
-
+            console.log(coctelesTotales)
             //VARIABLES PARA CALCULAR EL ULTIMO COCTELES Y QUITAR LA IMG DE LA CARGA
-            let imgLoader = document.getElementById("loader");
+            imgLoader = document.getElementById("loader");
             let lengthConsulta=coctelesTotales.drinks.length;
-            let ultimoCoctelConsulta=coctelesTotales.drinks[lengthConsulta-1].strDrink;
+            ultimoCoctelConsulta=coctelesTotales.drinks[lengthConsulta-1].strDrink;
             
-            /**
-             * @name addCocktails
-             * @description Estan funcion se escargara de ir cargando los cocteles de 8 en 8, 
-             *              indicandole el primer y ultimo coctel, estos parametros se irán cambiando conforme vaya haciendo scroll el usuario
-             */
+            
             contenedor.innerHTML="";
-            addCocktails=(startIndex, endIndex) =>{
-                let coctelesDivididos = coctelesTotales.drinks.slice(startIndex, endIndex);
-                coctelesDivididos.forEach(coctel => {
-                    let divCoctel = document.createElement('div');
-                    let divInfo = document.createElement('div');
-
-                    let imagen = document.createElement('img');
-                    let nombre = document.createElement('h3');
-                    let precio = document.createElement('p');
-                    let boton = document.createElement('input');
-                    let boton2 = document.createElement('input');
-
-                    imagen.src = coctel.strDrinkThumb;
-                    nombre.innerHTML = coctel.strDrink;
-                    precio.innerHTML = (9 + Math.random() * (13 - 9)).toFixed(2) + "€";
-                    divCoctel.className = "respuestaApi__coctel";
-                    divInfo.className = "respuestaApi__infoCoctel";
-                    boton.type = "submit";
-                    boton.value = "Ver detalles";
-                    boton2.type = "submit";
-                    boton2.value = 'Pedir';
-                    boton2.className="btnPedir";
-
-                    divInfo.appendChild(nombre);
-                    divInfo.appendChild(precio);
-                    divInfo.appendChild(boton);
-                    divInfo.appendChild(boton2);
-                    divCoctel.appendChild(imagen);
-                    divCoctel.appendChild(divInfo);
-                    contenedor.appendChild(divCoctel);
-
-                    //ELIMINAR LOGO DE CARGA CUANDO EL ULTIMO NOMBRE DEL COCTEL DEL ARRAY COINCIDA CON LOS QEU SE MUESTRA
-                    //LO VOLVEREMOS A PONER VISIBLE CUANDO HAYA UN CAMBIO EN LOS SELECT, CUANDO LA CONSULTA A LA API CAMBIE, 
-                    //EN EL METODO 'changeCallApi'
-                    if (ultimoCoctelConsulta==coctel.strDrink) {
-                        imgLoader.style.opacity="0";
-                    }
-                });
-
-                coctelesMostrados += 8; // Incrementar la cantidad de cócteles mostrados
-                console.log(coctelesMostrados)
-            };
+            
 
             // Cargar los primeros 8 cócteles
             addCocktails(0, coctelesMostrados);
@@ -243,7 +269,6 @@ async function getCocktails(llamadaApi) {
             
                         // Llamar a la función para agregar más cócteles al contenedor
                         addCocktails(startIndex, endIndex);
-                        console.log(startIndex+"-"+endIndex)
                         isFetch=false;
                     }, 1000); // Esperar 1 segundo
                 }
@@ -270,7 +295,7 @@ async function getCocktails(llamadaApi) {
 function changeCallApi() {
    
     let value="";
-    let llamadaApi="";
+    
 
     let categorias = document.getElementById("select__categorias")
     let tipoVaso =document.getElementById("select__tipoVaso")
@@ -281,7 +306,7 @@ function changeCallApi() {
         tipe.addEventListener("change",()=>{
             //VOLVER A PONER VISIBLE EL LOADER
             let imgLoader = document.getElementById("loader");
-            imgLoader.style.opacity=1;
+            imgLoader.style.opacity="1";
 
             cambiarACualquiera(tipeStrings)
             let selectedIndex=tipe.selectedIndex;
@@ -320,10 +345,11 @@ function changeCallApi() {
    botonMostrarTodos.addEventListener('click',function(){
         // VOLVER A PONER VISIBLE EL LOADER
         let imgLoader = document.getElementById("loader");
-        imgLoader.style.opacity = 1;
+        imgLoader.style.opacity = "1";
         
         cambiarACualquiera(" ");
-        getCocktails("https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic");
+        llamadaApi="https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic";
+        getCocktails();
    });
 }
 
@@ -334,13 +360,33 @@ function changeCallApi() {
  */
 function searchCoctail() {
     let input =document.getElementById("buscador");
-    console.log(input.value)
     input.addEventListener("input",()=>{
         getCocktails(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${input.value}`);
-        console.log(input)
     })
 }
 
-//------------------------------- FIN FUNCION PARA LA BUSQUEDA-----------------------------------
+//------------------------------- FIN FUNCION PARA LA BUSQUEDA----------------------------------
 
 
+//-------------------------------FUNCION PARA CARGAR LOS DETALLES----------------------------------
+/**
+ * @name loadDetails
+ * @description Funcion para cargar los detalles de los cocteles. El boton 'Ver detalles' le añadimos un listener que llamará a esta función
+ * @param idDrink Le pasamos el id del coctel para hacer una llamada a la api y que nos de toda la informacion de ese coctel
+ */
+async function loadDetails(idDrink){
+    let llamadaDetalleCoctel=`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${idDrink}`;
+    console.log(idDrink);
+
+    try {
+        let response = await fetch(llamadaDetalleCoctel);
+
+        if (response.ok) {
+            let coctel = await response.json();
+            console.log(coctel.drinks[0].strDrink) //Te devuelve un objeto la llamada, tenemos que acceder al primero [0] 
+        }
+    }catch(e){
+
+    }
+    
+}
