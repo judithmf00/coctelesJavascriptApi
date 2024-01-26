@@ -18,8 +18,7 @@ async function login(){
             let usuarios = await response.json();
             let usuario = usuarios.find(user => user.usuario == usuarioInput && user.password == passwordInput);
             if (usuario) {
-                containerInicioSesion.style.display="none"
-                inicioSesion=true;
+                containerInicioSesion.style.display="none";
             } else {
                 alert('Nombre de usuario o contraseña incorrectos');
             }

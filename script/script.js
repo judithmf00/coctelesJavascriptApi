@@ -10,7 +10,7 @@ let listaPedidos;
 let btnCuenta;
 let btnCancelar;
 let btnInicioSesion;
-let inicioSesion = false;
+let inicioSesion;
 
 //ORDENAR ALFABÉTICAMENTE EL RESULTADO DE LA API
 let radios ;
@@ -31,6 +31,8 @@ let modal ;
 let iconoInicio;
 
 window.onload=function () {
+    inicioSesion=document.getElementById("inicioSesion");
+    inicioSesion.style.display="none";
     btnInicioSesion=document.getElementById("btnInicioSesion");
     btnInicioSesion.addEventListener("click",function (ev) {
         ev.preventDefault();
