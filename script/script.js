@@ -5,11 +5,93 @@ let isFetch=false;
 let imgLoader;
 let ultimoCoctelConsulta;
 let llamadaApi="https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic";
+let carrito; //para aumentar el numero de elementos que hay en el carrito
+let listaPedidos;
+let btnCuenta;
+let btnCancelar;
+let btnInicioSesion;
+let inicioSesion = false;
+
+//ORDENAR ALFABÉTICAMENTE EL RESULTADO DE LA API
+let radios ;
+let seleccionado = "asc";
+
+//Inicializar los elementos locales
+let listElementCart = {
+    drinks: []
+};
+// Obtener los datos del localStorage
+const storedList = JSON.parse(localStorage.getItem("ListaPedidos"));
+// Si hay datos en el localStorage, asignarlos a listElementCart
+if (storedList && storedList.drinks) {
+    listElementCart = storedList;
+}
+let lengthElemCart = listElementCart.drinks.length;
+let modal ;
+let iconoInicio;
 
 window.onload=function () {
+    btnInicioSesion=document.getElementById("btnInicioSesion");
+    btnInicioSesion.addEventListener("click",function (ev) {
+        ev.preventDefault();
+        login();
+    }) 
+        
     //Contenedor en el que estaran las respuestas de la api
     contenedor=document.getElementById("respuestaApi");
+    iconoInicio=document.getElementById("volverInicio");
+    listaPedidos=document.getElementById("listaPedidos");
+
+    iconoInicio.addEventListener("click",function () {
+        modal.style.display="none";
+    })
+
+    modal= document.getElementById("modal");
+    modal.style.display="none";
+
+    carrito = document.querySelector('.divconCarrito #carrito');
+    carrito.style.setProperty('--content', `"${lengthElemCart}"`);
+    carrito.addEventListener("click",function() {
+        modal.style.display="block";
+        listaPedidos.innerHTML="";
+        addListPedidos()
+    })
+
+    radios =document.getElementsByClassName("radio");
+    Array.from(radios).forEach(element => {
+        element.addEventListener("change",function() {
+            element.id == "desc" ? seleccionado = "desc" : seleccionado = "asc";
+            getCocktails()
+        })
+    });
     
+    btnCuenta = document.getElementById("btnCuenta");
+    btnCuenta.addEventListener("click", loadAccount)
+
+    btnCancelar=document.getElementById("cancelarPedido")
+    btnCancelar.addEventListener("click",function() {
+        let coctelesPedido = document.getElementById("coctelesPedido");
+         // Eliminar los datos almacenados localmente
+        localStorage.removeItem("ListaPedidos");
+        localStorage.removeItem("Lista Pedidos");
+        localStorage.removeItem("Pedidos con las cantidades");
+        listElementCart.drinks = []; // Limpiar el carrito antes de agregar nuevos elementos
+
+        // Restablecer el contador del carrito
+        carrito.style.setProperty('--content', `"0"`);
+
+        // Limpiar la lista de pedidos
+        listaPedidos.innerHTML = "";
+
+        coctelesPedido.innerHTML="";
+
+        //  Alerta de que el pedido ha sido cancelado
+        alert("Pedido cancelado con éxito");
+
+        //Volver al inicio
+        modal.style.display="none";
+    })
+
     //CARGAR LOS SELECT DE BUSQUEDA
     loadCategories();
     loadGlass();
@@ -25,6 +107,7 @@ window.onload=function () {
     //Funcion para la busqueda
     searchCoctail();
 
+    addListPedidos();
     
 }
 
@@ -166,14 +249,7 @@ async function loadAlcoholic(){
 
 addCocktails=(startIndex, endIndex) =>{
     
-    // orderCOctail()
-    console.log("coctelesTotales")
-    console.log(coctelesTotales)
-    console.log("coctelesTotales de mayor a menor")
-    coctelesTotales.drinks.sort((a, b) => b.strDrink.localeCompare(a.strDrink))
-    console.log("coctelesTotales")
-    console.log(coctelesTotales)
-    //crear una variable global para que indique si esta checkeado el asc o desc, y segun eso ordene de una forma u otra
+    seleccionado == "asc" ? coctelesTotales.drinks.sort((a, b) => a.strDrink.localeCompare(b.strDrink)) : coctelesTotales.drinks.sort((a, b) => b.strDrink.localeCompare(a.strDrink));
 
     let coctelesDivididos = coctelesTotales.drinks.slice(startIndex, endIndex);
     console.log(coctelesDivididos)
@@ -196,12 +272,18 @@ addCocktails=(startIndex, endIndex) =>{
         boton.value = "Ver detalles";
         boton.addEventListener("click",function (ev) {
             ev.preventDefault();
-            loadDetails(coctel.idDrink);
+            localStorage.setItem("Usuario",JSON.stringify("true"))
+            console.log(JSON.parse(localStorage.getItem("ListaPedidos")))
+            window.location.href =`./html/detalles.html?id=${coctel.idDrink}`;
         })
 
         boton2.type = "button";
         boton2.value = 'Pedir';
         boton2.className="btnPedir";
+        boton2.addEventListener("click",function (ev) {
+            ev.preventDefault();
+            loadCart(coctel.idDrink);
+        })
 
         divInfo.appendChild(nombre);
         divInfo.appendChild(precio);
@@ -238,7 +320,6 @@ async function getCocktails() {
     try {
         let response = await fetch(llamadaApi)
 
-        
         if (response.ok) {
             coctelesTotales= await response.json();
             console.log(coctelesTotales)
@@ -247,10 +328,8 @@ async function getCocktails() {
             let lengthConsulta=coctelesTotales.drinks.length;
             ultimoCoctelConsulta=coctelesTotales.drinks[lengthConsulta-1].strDrink;
             
-            
             contenedor.innerHTML="";
             
-
             // Cargar los primeros 8 cócteles
             addCocktails(0, coctelesMostrados);
 
@@ -274,7 +353,7 @@ async function getCocktails() {
                 }
             });
         } else {
-            console.error('Error en la solicitud: ', response1.status);
+            console.error('Error en la solicitud: ', response.status);
         }
     } catch (error) {
         console.error('Error en la solicitud: ', error);
@@ -296,7 +375,6 @@ function changeCallApi() {
    
     let value="";
     
-
     let categorias = document.getElementById("select__categorias")
     let tipoVaso =document.getElementById("select__tipoVaso")
     let ingredientes = document.getElementById("select__ingredientes")
@@ -313,7 +391,7 @@ function changeCallApi() {
             value = tipe.options[selectedIndex].value;
             llamadaApi= `https://www.thecocktaildb.com/api/json/v1/1/filter.php?${filter}=${value}`.replaceAll(" ","_");
 
-            getCocktails(llamadaApi);
+            getCocktails();
             coctelesMostrados=8;
         })
     }
@@ -333,7 +411,6 @@ function changeCallApi() {
         let tipos=["categorias" , "tipoVaso", "ingredientes" , "alcohol"]
         
         tipos.forEach(element => {
-            // console.log(element+"-"+tipo)
             if (element!=tipo) {
                 document.getElementById(`select__${element}`).options[0].selected = true 
             }
@@ -361,32 +438,11 @@ function changeCallApi() {
 function searchCoctail() {
     let input =document.getElementById("buscador");
     input.addEventListener("input",()=>{
-        getCocktails(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${input.value}`);
-    })
+        llamadaApi=`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${input.value}`
+        getCocktails();
+    });
 }
 
 //------------------------------- FIN FUNCION PARA LA BUSQUEDA----------------------------------
 
 
-//-------------------------------FUNCION PARA CARGAR LOS DETALLES----------------------------------
-/**
- * @name loadDetails
- * @description Funcion para cargar los detalles de los cocteles. El boton 'Ver detalles' le añadimos un listener que llamará a esta función
- * @param idDrink Le pasamos el id del coctel para hacer una llamada a la api y que nos de toda la informacion de ese coctel
- */
-async function loadDetails(idDrink){
-    let llamadaDetalleCoctel=`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${idDrink}`;
-    console.log(idDrink);
-
-    try {
-        let response = await fetch(llamadaDetalleCoctel);
-
-        if (response.ok) {
-            let coctel = await response.json();
-            console.log(coctel.drinks[0].strDrink) //Te devuelve un objeto la llamada, tenemos que acceder al primero [0] 
-        }
-    }catch(e){
-
-    }
-    
-}

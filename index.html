@@ -3,19 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="./script/script.js"></script>
+    <script src="./script/login.js"></script>
+    <script src="./script/carrito.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>COCTELERIA</title>
 </head>
 <body> 
-        
+    <!-- INICIO DE SESION -->
+    <section id="inicioSesion">
+        <form action="" method="get">
+            <div>
+                <label for="Usuario">Usuario</label>
+                <input type="text" name="Usuario" id="usuario">    
+            </div>
+            <div>
+                <label for="Contraseña">Contraseña</label>
+                <input type="password" name="Contraseña" id="password">
+            </div>
+            <input type="button" value="Iniciar sesion" id="btnInicioSesion">
+        </form>
+    </section>
     <!-- NAVEGACION -->
     <div class="contenedorNav">
         <nav>
             <ul>
                 <li>
-                    <a href="#"><img src="logo.jpg" alt=""></a>
+                    <a href="#"><img src="./css/img/logo.jpg" alt=""></a>
                 </li>
             </ul>
         </nav>
@@ -30,13 +45,17 @@
                 <p>Le presentamos nuestra carta</p>
             </div>
             <div class="headerImg">
-                <img src="imgFondo.jpg" alt="">
+                <a href="">
+                    <img src="./css/img/imgFondo.jpg" alt="">
+                </a>
             </div>
         </div>
     </header>
     
     <div class="divconCarrito">
-        <i class="fa-solid fa-cart-shopping" id="carrito"></i>
+        <a href="#">
+            <i class="fa-solid fa-cart-shopping" id="carrito"></i>
+        </a>
     </div>
     <main>
             <div class="buscador" >
@@ -82,7 +101,7 @@
             <div class="contenedorOrdenar">
                 <p>Ordenar:</p>
                 <div>
-                    <input type="radio" name="radioOrder" id="asc" class="radio">
+                    <input type="radio" name="radioOrder" id="asc" class="radio" selected>
                     <label for="asc">Ascendentemente</label>
                 </div>
                 <div>
@@ -101,6 +120,55 @@
         </div>
         
     </main>
+    
+    <section class="modal" id="modal">
+        <!-- NAVEGACION -->
+        <div class="contenedorNav">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="#" id="volverInicio"><img src="./css/img/logo.jpg" alt=""></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- CABECERA -->
+        <header>
+            <div class="contenedorHeader">
+                <div class="headerTexto">
+                    <h1>Pedido en marcha...</h1>
+                    <h3>Aquí tiene el resumen de su pedido</h3>
+                    <p>Puede modificarlo aquí</p>
+                </div>
+                <div class="headerImg">
+                    <a href="">
+                        <img src="bartender-flatline.svg" alt="">
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div class="espacio"></div>
+        <div class="contenedorPedidos">
+            <div id="listaPedidos">
+
+            </div>
+            <div class="containerFactura">
+                <div class="factura">
+                    <div id="coctelesPedido">
+                        
+                    </div>
+                    <div id="containerButton">
+                        <button id="btnCuenta">Ver cuenta</button>
+                    </div>
+                    <button id="cancelarPedido">Cancelar pedido</button>
+                </div>
+                <div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </section>
     
 </body>
 </html>
